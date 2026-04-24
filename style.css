@@ -104,8 +104,8 @@ main { padding: calc(var(--header-h) + var(--gap)) var(--pad-grid) var(--pad-gri
 }
 #lb-cursor.show { display: block; }
 #lb-cursor svg  { width: 48px; height: 48px; fill: none; stroke-width: 10; stroke-linecap: square; stroke-linejoin: miter; }
-#lb-cursor.on-dark svg  { stroke: rgba(125, 125, 125, 0.8); }
-#lb-cursor.on-light svg { stroke: rgba(125, 125, 125, 0.8); }
+#lb-cursor.on-dark svg  { stroke: rgba(0, 0, 0, 0.90); }
+#lb-cursor.on-light svg { stroke: rgba(0, 0, 0, 0.90); }
 
 /* ── Responsive ── */
 @media (max-width: 900px) { :root { --pad-grid: 40px; } }
