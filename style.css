@@ -114,10 +114,48 @@ main { padding: calc(var(--header-h) + var(--gap)) var(--pad-grid) var(--pad-gri
   #lb-info { display: none; }
 }
 
+/* ── Thumbnails ── */
+#lb-img-a, #lb-img-b {
+  transform-origin: center center;
+}
+#lb-stage.zoomed { overflow: visible; }
+#lb-stage.zoomed #lb-left-zone,
+#lb-stage.zoomed #lb-right-zone { pointer-events: none; }
+  position: absolute; bottom: 48px; left: 0; right: 0;
+  height: 64px;
+  display: flex; align-items: center;
+  padding: 0 var(--pad-header);
+  gap: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  z-index: 15;
+  background: var(--bg);
+}
+#lb-thumbs::-webkit-scrollbar { display: none; }
+
+.lb-thumb {
+  flex-shrink: 0;
+  width: 72px; height: 48px;
+  object-fit: cover;
+  opacity: 0.45;
+  transition: opacity .2s;
+}
+.lb-thumb:hover { opacity: 1; }
+.lb-thumb.active { opacity: 1; }
+
+@media (hover: hover) {
+  #lb-stage { bottom: calc(48px + 64px + 1px); }
+}
+
 /* Ordinador: amaga el bloc d'info de mòbil */
 @media (hover: hover) {
   #lb-project-info-mobile { display: none; }
   #grid-footer { display: none; }
+  #lb-thumbs { display: flex; }
+}
+@media (hover: none) {
+  #lb-thumbs { display: none; }
 }
 @media (hover: none) {
   #cursor, #lb-cursor { display: none !important; }

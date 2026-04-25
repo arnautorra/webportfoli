@@ -33,7 +33,31 @@ const imgs      = [document.getElementById('lb-img-a'), document.getElementById(
 let activeSlot = 0, curProj = 0, curPhoto = 0, busy = false;
 const DURATION = 480;
 
-function setMeta() {
+const lbThumbs = document.getElementById('lb-thumbs');
+
+function renderThumbs() {
+  lbThumbs.innerHTML = '';
+  PROJECTS[curProj].photos.forEach((src, i) => {
+    const img = document.createElement('img');
+    img.className = 'lb-thumb' + (i === curPhoto ? ' active' : '');
+    img.src = src;
+    img.alt = '';
+    img.addEventListener('click', () => {
+      if (i === curPhoto) return;
+      navigate(i > curPhoto ? 1 : -1, i);
+    });
+    lbThumbs.appendChild(img);
+  });
+}
+
+function updateThumbs() {
+  lbThumbs.querySelectorAll('.lb-thumb').forEach((el, i) => {
+    el.classList.toggle('active', i === curPhoto);
+  });
+  // Scroll la miniatura activa al centre
+  const active = lbThumbs.querySelector('.active');
+  if (active) active.scrollIntoView({ inline: 'center', behavior: 'smooth', block: 'nearest' });
+}
   const p = PROJECTS[curProj];
   lbTitle.textContent   = p.title.toUpperCase();
   lbSub.textContent     = p.studio.toUpperCase();
@@ -86,6 +110,7 @@ function openLightbox(pi, ph) {
   }
 
   setMeta();
+  renderThumbs();
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
   if (!isTouchDevice()) {
@@ -113,16 +138,17 @@ function preloadNext(dir) {
   img.src = photos[nextIdx];
 }
 
-function navigate(dir) {
+function navigate(dir, targetIdx = null) {
   if (busy) return;
   busy = true;
 
   const photos    = PROJECTS[curProj].photos;
-  const nextPhoto = (curPhoto + dir + photos.length) % photos.length;
+  const nextPhoto = targetIdx !== null ? targetIdx : (curPhoto + dir + photos.length) % photos.length;
+  const resolvedDir = nextPhoto > curPhoto ? 1 : -1;
   const current   = imgs[activeSlot];
   const next      = imgs[1 - activeSlot];
-  const incomingX = dir === 1 ? '100vw' : '-100vw';
-  const exitX     = dir === 1 ? '-100vw' : '100vw';
+  const incomingX = resolvedDir === 1 ? '100vw' : '-100vw';
+  const exitX     = resolvedDir === 1 ? '-100vw' : '100vw';
 
   // Preload before animating
   preload(photos[nextPhoto]).then(() => {
@@ -171,14 +197,14 @@ if (initSlug) {
 
 lbClose.addEventListener('click', closeLightbox);
 lbHome.addEventListener('click',  closeLightbox);
-lbLeft.addEventListener('click',  () => navigate(-1));
-lbRight.addEventListener('click', () => navigate(1));
+lbLeft.addEventListener('click',  () => navigateWithZoomReset(-1));
+lbRight.addEventListener('click', () => navigateWithZoomReset(1));
 
 document.addEventListener('keydown', e => {
   if (!lb.classList.contains('open')) return;
-  if (e.key === 'Escape')     closeLightbox();
-  if (e.key === 'ArrowLeft')  navigate(-1);
-  if (e.key === 'ArrowRight') navigate(1);
+  if (e.key === 'Escape')     { resetZoom(); closeLightbox(); }
+  if (e.key === 'ArrowLeft')  navigateWithZoomReset(-1);
+  if (e.key === 'ArrowRight') navigateWithZoomReset(1);
 });
 
 let tx = 0;
