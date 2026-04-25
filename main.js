@@ -38,6 +38,11 @@ function setMeta() {
   lbTitle.textContent   = p.title.toUpperCase();
   lbSub.textContent     = p.studio.toUpperCase();
   lbCounter.textContent = `${curPhoto + 1} / ${p.photos.length}`;
+  // Mòbil
+  const mTitle = lb.querySelector('.lb-m-title');
+  const mSub   = lb.querySelector('.lb-m-sub');
+  if (mTitle) mTitle.textContent = p.title.toUpperCase();
+  if (mSub)   mSub.textContent   = p.studio.toUpperCase();
 }
 
 // Preload an image, returns a Promise

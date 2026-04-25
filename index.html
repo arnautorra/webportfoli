@@ -12,15 +12,20 @@
 <div id="lb-cursor"><svg id="lb-arrow" viewBox="0 0 48 48"></svg></div>
 
 <header>
-  <a class="h-left" href="#projectes">Projectes</a>
-  <a class="h-mid"  href="#projectes">Arnau Torra</a>
+  <span id="header-mobile-left"><a class="h-left" href="#projectes">Projectes</a></span>
+  <a class="h-mid" href="#projectes">Arnau Torra</a>
   <a class="h-right" href="mailto:info.arnautorra@gmail.com">info.arnautorra@gmail.com</a>
 </header>
 
 <main id="projectes"><div class="grid" id="grid"></div></main>
+<div id="grid-footer"><a href="mailto:info.arnautorra@gmail.com">info.arnautorra@gmail.com</a></div>
 
 <div id="lightbox">
   <div id="lb-header">
+    <div id="lb-project-info-mobile">
+      <span class="lb-m-title"></span>
+      <span class="lb-m-sub"></span>
+    </div>
     <div id="lb-info">
       <span id="lb-info-title"></span>
       <span id="lb-info-sub"></span>
@@ -36,6 +41,8 @@
   </div>
   <div id="lb-footer">
     <button id="lb-close">✕</button>
+    <a id="lb-email-mobile" href="mailto:info.arnautorra@gmail.com">info.arnautorra@gmail.com</a>
+    <button id="lb-scroll-top">↑</button>
     <span id="lb-counter"></span>
   </div>
 </div>
