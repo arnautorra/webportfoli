@@ -109,7 +109,16 @@ main { padding: calc(var(--header-h) + var(--gap)) var(--pad-grid) var(--pad-gri
 @media (max-width: 700px) { .grid { grid-template-columns: repeat(2,1fr); } :root { --pad-grid: 20px; } }
 @media (max-width: 440px) { .grid { grid-template-columns: 1fr; } }
 
-/* ── Oculta cursor en dispositius tàctils ── */
+/* Mòbil: amaga el bloc d'info d'ordinador */
+@media (hover: none) {
+  #lb-info { display: none; }
+}
+
+/* Ordinador: amaga el bloc d'info de mòbil */
+@media (hover: hover) {
+  #lb-project-info-mobile { display: none; }
+  #grid-footer { display: none; }
+}
 @media (hover: none) {
   #cursor, #lb-cursor { display: none !important; }
   * { cursor: auto !important; }

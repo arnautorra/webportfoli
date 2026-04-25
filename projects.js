@@ -28,12 +28,7 @@ const PROJECTS = [
       'projectes/2602_Sabadell/Sabadelll-22.jpg',
       'projectes/2602_Sabadell/Sabadelll-23.jpg',
       'projectes/2602_Sabadell/Sabadelll-24.jpg',
-      'projectes/2602_Sabadell/Sabadelll-25.jpg',
-      'projectes/2602_Sabadell/Sabadelll-26.jpg',
-      'projectes/2602_Sabadell/Sabadelll-27.jpg',
-      'projectes/2602_Sabadell/Sabadelll-28.jpg',
-      'projectes/2602_Sabadell/Sabadelll-29.jpg',
-    ]
+      ]
   },
   {
     slug: 'escola-pere-lliscart',
@@ -47,15 +42,6 @@ const PROJECTS = [
       'projectes/2602_PereLliscart/PereLliscart-5.jpg',
       'projectes/2602_PereLliscart/PereLliscart-6.jpg',
       'projectes/2602_PereLliscart/PereLliscart-7.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-8.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-9.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-10.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-11.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-12.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-13.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-14.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-15.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-16.jpg',
     ]
   },
   {
@@ -116,8 +102,6 @@ const PROJECTS = [
       'projectes/2505_CriptaGuell/09.jpg',
       'projectes/2505_CriptaGuell/10.jpg',
       'projectes/2505_CriptaGuell/11.jpg',
-      'projectes/2505_CriptaGuell/12.jpg',
-      'projectes/2505_CriptaGuell/13.jpg',
     ]
   },
   {
