@@ -148,7 +148,7 @@ main { padding: calc(var(--header-h) + var(--gap)) var(--pad-grid) var(--pad-gri
   * { cursor: auto !important; }
   #cursor, #lb-cursor { display:none !important; }
 
-  /* Header grid mòbil: esquerra Projectes, dreta Arnau Torra */
+  /* Header grid mòbil: esquerra Projectes, dreta arnau_torra */
   #header-grid { padding:0 16px; }
   #header-grid .h-right { display:none; }
   #header-grid .h-mid { position:static; transform:none; font-size:13px; }
@@ -161,7 +161,7 @@ main { padding: calc(var(--header-h) + var(--gap)) var(--pad-grid) var(--pad-gri
   #footer-grid a { font-size:11px; color:#888; text-decoration:none; }
 
   main { padding-left:20px; padding-right:20px; }
-  .grid { grid-template-columns:repeat(2,1fr); }
+  .grid { grid-template-columns:repeat(1,1fr); }
 
   /* Lightbox mòbil: scroll vertical */
   #lightbox { overflow-y:auto; display:none; flex-direction:column; }
