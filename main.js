@@ -15,7 +15,7 @@ PROJECTS.forEach((p, i) => {
   gridEl.appendChild(c);
 });
 
-// ── Lightbox ──
+// ── Lightbox refs ──
 const lb        = document.getElementById('lightbox');
 const lbHome    = document.getElementById('lb-home');
 const lbClose   = document.getElementById('lb-close');
@@ -27,14 +27,25 @@ const lbSub     = document.getElementById('lb-info-sub');
 const lbStage   = document.getElementById('lb-stage');
 const lbCursor  = document.getElementById('lb-cursor');
 const lbArrow   = document.getElementById('lb-arrow');
+const lbThumbs  = document.getElementById('lb-thumbs');
 const cursor    = document.getElementById('cursor');
 const imgs      = [document.getElementById('lb-img-a'), document.getElementById('lb-img-b')];
 
 let activeSlot = 0, curProj = 0, curPhoto = 0, busy = false;
 const DURATION = 480;
 
-const lbThumbs = document.getElementById('lb-thumbs');
+const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
 
+// ── Meta ──
+function setMeta() {
+  const p = PROJECTS[curProj];
+  lbTitle.textContent   = p.title.toUpperCase();
+  lbSub.textContent     = p.studio.toUpperCase();
+  lbCounter.textContent = `${curPhoto + 1} / ${p.photos.length}`;
+  updateThumbs();
+}
+
+// ── Thumbnails ──
 function renderThumbs() {
   lbThumbs.innerHTML = '';
   PROJECTS[curProj].photos.forEach((src, i) => {
@@ -44,7 +55,7 @@ function renderThumbs() {
     img.alt = '';
     img.addEventListener('click', () => {
       if (i === curPhoto) return;
-      navigate(i > curPhoto ? 1 : -1, i);
+      navigateWithZoomReset(i > curPhoto ? 1 : -1, i);
     });
     lbThumbs.appendChild(img);
   });
@@ -54,22 +65,11 @@ function updateThumbs() {
   lbThumbs.querySelectorAll('.lb-thumb').forEach((el, i) => {
     el.classList.toggle('active', i === curPhoto);
   });
-  // Scroll la miniatura activa al centre
   const active = lbThumbs.querySelector('.active');
   if (active) active.scrollIntoView({ inline: 'center', behavior: 'smooth', block: 'nearest' });
 }
-  const p = PROJECTS[curProj];
-  lbTitle.textContent   = p.title.toUpperCase();
-  lbSub.textContent     = p.studio.toUpperCase();
-  lbCounter.textContent = `${curPhoto + 1} / ${p.photos.length}`;
-  // Mòbil
-  const mTitle = lb.querySelector('.lb-m-title');
-  const mSub   = lb.querySelector('.lb-m-sub');
-  if (mTitle) mTitle.textContent = p.title.toUpperCase();
-  if (mSub)   mSub.textContent   = p.studio.toUpperCase();
-}
 
-// Preload an image, returns a Promise
+// ── Preload ──
 function preload(src) {
   return new Promise(resolve => {
     const img = new Image();
@@ -78,23 +78,23 @@ function preload(src) {
   });
 }
 
-const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
+function preloadNext(dir) {
+  const photos  = PROJECTS[curProj].photos;
+  const nextIdx = (curPhoto + dir + photos.length) % photos.length;
+  const img = new Image();
+  img.src = photos[nextIdx];
+}
 
+// ── Lightbox open / close ──
 function openLightbox(pi, ph) {
   curProj = pi; curPhoto = ph; busy = false;
 
   if (isTouchDevice()) {
-    // Mòbil: mostra totes les fotos en vertical
-    const photos = PROJECTS[curProj].photos;
     imgs[0].style.opacity = '0';
     imgs[1].style.opacity = '0';
-
-    // Elimina fotos anteriors si n'hi havia
-    const existing = lb.querySelectorAll('.lb-mobile-img');
-    existing.forEach(el => el.remove());
-
+    lb.querySelectorAll('.lb-mobile-img').forEach(el => el.remove());
     const stage = document.getElementById('lb-stage');
-    photos.forEach(src => {
+    PROJECTS[curProj].photos.forEach(src => {
       const img = document.createElement('img');
       img.className = 'lb-slide lb-mobile-img';
       img.src = src;
@@ -102,7 +102,6 @@ function openLightbox(pi, ph) {
       stage.appendChild(img);
     });
   } else {
-    // Ordinador: comportament normal amb sliding
     imgs.forEach(img => { img.style.transition = 'none'; img.style.transform = 'translateX(0)'; img.style.opacity = '0'; });
     activeSlot = 0;
     imgs[0].src = PROJECTS[curProj].photos[curPhoto];
@@ -114,8 +113,7 @@ function openLightbox(pi, ph) {
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
   if (!isTouchDevice()) {
-    const slug = PROJECTS[curProj].slug;
-    history.pushState({ slug }, '', `/${slug}`);
+    history.pushState({ slug: PROJECTS[curProj].slug }, '', `/${PROJECTS[curProj].slug}`);
   }
 }
 
@@ -125,39 +123,29 @@ function closeLightbox() {
   lbCursor.classList.remove('show');
   cursor.classList.remove('hidden');
   busy = false;
-  // Elimina fotos mòbil
   lb.querySelectorAll('.lb-mobile-img').forEach(el => el.remove());
   if (!isTouchDevice()) history.pushState({}, '', '/');
 }
 
-// Precarrega la foto següent en segon pla
-function preloadNext(dir) {
-  const photos  = PROJECTS[curProj].photos;
-  const nextIdx = (curPhoto + dir + photos.length) % photos.length;
-  const img = new Image();
-  img.src = photos[nextIdx];
-}
-
+// ── Navigate ──
 function navigate(dir, targetIdx = null) {
   if (busy) return;
   busy = true;
 
-  const photos    = PROJECTS[curProj].photos;
-  const nextPhoto = targetIdx !== null ? targetIdx : (curPhoto + dir + photos.length) % photos.length;
+  const photos      = PROJECTS[curProj].photos;
+  const nextPhoto   = targetIdx !== null ? targetIdx : (curPhoto + dir + photos.length) % photos.length;
   const resolvedDir = nextPhoto > curPhoto ? 1 : -1;
-  const current   = imgs[activeSlot];
-  const next      = imgs[1 - activeSlot];
-  const incomingX = resolvedDir === 1 ? '100vw' : '-100vw';
-  const exitX     = resolvedDir === 1 ? '-100vw' : '100vw';
+  const current     = imgs[activeSlot];
+  const next        = imgs[1 - activeSlot];
+  const incomingX   = resolvedDir === 1 ? '100vw' : '-100vw';
+  const exitX       = resolvedDir === 1 ? '-100vw' : '100vw';
 
-  // Preload before animating
   preload(photos[nextPhoto]).then(() => {
     next.style.transition = 'none';
     next.style.transform  = `translateX(${incomingX})`;
     next.style.opacity    = '1';
     next.src = photos[nextPhoto];
-
-    next.getBoundingClientRect(); // force reflow
+    next.getBoundingClientRect();
 
     const easing = `transform ${DURATION}ms cubic-bezier(.65,0,.35,1)`;
     current.style.transition = easing;
@@ -173,32 +161,82 @@ function navigate(dir, targetIdx = null) {
       activeSlot = 1 - activeSlot;
       setMeta();
       busy = false;
+      preloadNext(dir);
     }, DURATION);
   });
 }
 
-// Handle browser back button
-window.addEventListener('popstate', () => {
-  if (lb.classList.contains('open')) {
-    lb.classList.remove('open');
-    document.body.style.overflow = '';
-    lbCursor.classList.remove('show');
-    cursor.classList.remove('hidden');
-    busy = false;
-  }
-});
+// ── Zoom ──
+let scale = 1, panX = 0, panY = 0, isPanning = false, panStart = { x: 0, y: 0 };
+const MIN_SCALE = 1, MAX_SCALE = 4;
 
-// Open project if URL matches on page load
-const initSlug = location.pathname.replace('/', '');
-if (initSlug) {
-  const idx = PROJECTS.findIndex(p => p.slug === initSlug);
-  if (idx !== -1) openLightbox(idx, 0);
+function getActiveImg() { return imgs[activeSlot]; }
+
+function applyTransform(img) {
+  img.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+  img.style.transformOrigin = 'center center';
+  lbStage.classList.toggle('zoomed', scale > 1);
+  if (scale > 1) cursor.style.opacity = '0';
+  else cursor.style.opacity = '1';
 }
 
+function resetZoom() {
+  scale = 1; panX = 0; panY = 0;
+  const img = getActiveImg();
+  if (img) { img.style.transform = ''; }
+  lbStage.classList.remove('zoomed');
+  cursor.style.opacity = '1';
+}
+
+function navigateWithZoomReset(dir, targetIdx = null) {
+  resetZoom();
+  navigate(dir, targetIdx);
+}
+
+lbStage.addEventListener('wheel', e => {
+  if (isTouchDevice()) return;
+  e.preventDefault();
+  const img  = getActiveImg();
+  const rect = img.getBoundingClientRect();
+  const cx   = e.clientX - (rect.left + rect.width / 2);
+  const cy   = e.clientY - (rect.top + rect.height / 2);
+  const delta    = e.deltaY < 0 ? 1.12 : 0.9;
+  const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * delta));
+  if (newScale === MIN_SCALE) { resetZoom(); return; }
+  panX  = cx - (cx - panX) * (newScale / scale);
+  panY  = cy - (cy - panY) * (newScale / scale);
+  scale = newScale;
+  applyTransform(img);
+}, { passive: false });
+
+lbStage.addEventListener('mousedown', e => {
+  if (scale <= 1 || isTouchDevice()) return;
+  isPanning = true;
+  panStart  = { x: e.clientX - panX, y: e.clientY - panY };
+  lbStage.style.cursor = 'grabbing';
+});
+window.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  panX = e.clientX - panStart.x;
+  panY = e.clientY - panStart.y;
+  applyTransform(getActiveImg());
+});
+window.addEventListener('mouseup', () => {
+  if (!isPanning) return;
+  isPanning = false;
+  lbStage.style.cursor = '';
+});
+
+// ── Listeners ──
 lbClose.addEventListener('click', closeLightbox);
-lbHome.addEventListener('click',  closeLightbox);
+document.getElementById('lb-close-mobile').addEventListener('click', closeLightbox);
+lbHome.addEventListener('click', closeLightbox);
 lbLeft.addEventListener('click',  () => navigateWithZoomReset(-1));
 lbRight.addEventListener('click', () => navigateWithZoomReset(1));
+
+document.getElementById('lb-scroll-top').addEventListener('click', () => {
+  lb.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 document.addEventListener('keydown', e => {
   if (!lb.classList.contains('open')) return;
@@ -209,9 +247,29 @@ document.addEventListener('keydown', e => {
 
 let tx = 0;
 lb.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
-lb.addEventListener('touchend',   e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) navigate(dx < 0 ? 1 : -1); });
+lb.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 40) navigate(dx < 0 ? 1 : -1);
+});
 
-// ── Arrow cursor — binary black/white based on pixel brightness ──
+// ── Routing ──
+window.addEventListener('popstate', () => {
+  if (lb.classList.contains('open')) {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    lbCursor.classList.remove('show');
+    cursor.classList.remove('hidden');
+    busy = false;
+  }
+});
+
+const initSlug = location.pathname.replace('/', '');
+if (initSlug) {
+  const idx = PROJECTS.findIndex(p => p.slug === initSlug);
+  if (idx !== -1) openLightbox(idx, 0);
+}
+
+// ── Arrow cursor ──
 lbStage.addEventListener('mousemove', e => {
   lbCursor.style.left = e.clientX + 'px';
   lbCursor.style.top  = e.clientY + 'px';
@@ -223,7 +281,10 @@ lbStage.addEventListener('mouseenter', () => { lbCursor.classList.add('show'); c
 lbStage.addEventListener('mouseleave', () => { lbCursor.classList.remove('show'); cursor.classList.remove('hidden'); });
 
 // ── Global cursor ──
-document.addEventListener('mousemove', e => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
 document.querySelectorAll('a, button, .project-cell').forEach(el => {
   el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
   el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
@@ -232,5 +293,4 @@ document.querySelectorAll('a, button, .project-cell').forEach(el => {
 // ── Protecció imatges ──
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
-// Bloqueig tàctil (press llarg en mòbil)
 document.addEventListener('touchstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); }, { passive: false });

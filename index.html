@@ -11,41 +11,57 @@
 <div id="cursor"></div>
 <div id="lb-cursor"><svg id="lb-arrow" viewBox="0 0 48 48"></svg></div>
 
-<header>
-  <span id="header-mobile-left"><a class="h-left" href="#projectes">Projectes</a></span>
+<!-- HEADER GRID -->
+<header id="header-grid">
+  <a class="h-left" href="#projectes">Projectes</a>
   <a class="h-mid" href="#projectes">Arnau Torra</a>
   <a class="h-right" href="mailto:info.arnautorra@gmail.com">info.arnautorra@gmail.com</a>
 </header>
 
-<main id="projectes"><div class="grid" id="grid"></div></main>
-<div id="grid-footer"><a href="mailto:info.arnautorra@gmail.com">info.arnautorra@gmail.com</a></div>
+<!-- FOOTER GRID (mòbil) -->
+<div id="footer-grid">
+  <a href="mailto:info.arnautorra@gmail.com">info.arnautorra@gmail.com</a>
+</div>
 
+<main id="projectes"><div class="grid" id="grid"></div></main>
+
+<!-- LIGHTBOX -->
 <div id="lightbox">
+
+  <!-- HEADER PROJECTE -->
   <div id="lb-header">
-    <div id="lb-project-info-mobile">
-      <span class="lb-m-title"></span>
-      <span class="lb-m-sub"></span>
-    </div>
     <div id="lb-info">
       <span id="lb-info-title"></span>
       <span id="lb-info-sub"></span>
     </div>
-    <a class="h-mid" href="#projectes" id="lb-home">Arnau Torra</a>
+    <a class="h-mid" id="lb-home" href="#projectes">Arnau Torra</a>
     <a class="h-right" href="mailto:info.arnautorra@gmail.com">info.arnautorra@gmail.com</a>
   </div>
+
+  <!-- STAGE -->
   <div id="lb-stage">
     <div id="lb-left-zone"></div>
     <div id="lb-right-zone"></div>
     <img class="lb-slide" id="lb-img-a" src="" alt="">
     <img class="lb-slide" id="lb-img-b" src="" alt="">
   </div>
+
+  <!-- THUMBNAILS (ordinador) -->
   <div id="lb-thumbs"></div>
+
+  <!-- FOOTER PROJECTE -->
   <div id="lb-footer">
     <button id="lb-close">✕</button>
-    <a id="lb-email-mobile" href="mailto:info.arnautorra@gmail.com">info.arnautorra@gmail.com</a>
-    <button id="lb-scroll-top">↑</button>
-    <span id="lb-counter"></span>
+    <div id="lb-counter"></div>
   </div>
+
+  <!-- FOOTER PROJECTE MÒBIL -->
+  <div id="lb-footer-mobile">
+    <button id="lb-close-mobile">✕</button>
+    <button id="lb-scroll-top">↑</button>
+    <a href="mailto:info.arnautorra@gmail.com">info.arnautorra@gmail.com</a>
+  </div>
+
 </div>
 
 <script>
