@@ -53,6 +53,8 @@ function renderThumbs() {
     img.className = 'lb-thumb' + (i === curPhoto ? ' active' : '');
     img.src = src;
     img.alt = '';
+    img.loading = 'lazy';
+    prepareImage(img);
     img.addEventListener('click', () => {
       if (i === curPhoto) return;
       navigateWithZoomReset(i > curPhoto ? 1 : -1, i);
@@ -69,7 +71,14 @@ function updateThumbs() {
   if (active) active.scrollIntoView({ inline: 'center', behavior: 'smooth', block: 'nearest' });
 }
 
-// ── Preload ──
+// ── Image helpers ──
+function prepareImage(img) {
+  img.classList.add('lazy-img');
+  img.classList.remove('loaded');
+  img.onload = () => img.classList.add('loaded');
+  img.onerror = () => img.classList.add('loaded');
+}
+
 function preload(src) {
   return new Promise(resolve => {
     const img = new Image();
@@ -99,10 +108,17 @@ function openLightbox(pi, ph) {
       img.className = 'lb-slide lb-mobile-img';
       img.src = src;
       img.alt = PROJECTS[curProj].title;
+      img.loading = 'lazy';
+      prepareImage(img);
       stage.appendChild(img);
     });
   } else {
-    imgs.forEach(img => { img.style.transition = 'none'; img.style.transform = 'translateX(0)'; img.style.opacity = '0'; });
+    imgs.forEach(img => {
+      img.style.transition = 'none';
+      img.style.transform = 'translateX(0)';
+      img.style.opacity = '0';
+      prepareImage(img);
+    });
     activeSlot = 0;
     imgs[0].src = PROJECTS[curProj].photos[curPhoto];
     imgs[0].style.opacity = '1';
@@ -112,6 +128,7 @@ function openLightbox(pi, ph) {
   renderThumbs();
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
+  if (!isTouchDevice()) cursor.classList.add('hidden');
   if (!isTouchDevice()) {
     history.pushState({ slug: PROJECTS[curProj].slug }, '', `/${PROJECTS[curProj].slug}`);
   }
@@ -141,6 +158,7 @@ function navigate(dir, targetIdx = null) {
   const exitX       = resolvedDir === 1 ? '-100vw' : '100vw';
 
   preload(photos[nextPhoto]).then(() => {
+    prepareImage(next);
     next.style.transition = 'none';
     next.style.transform  = `translateX(${incomingX})`;
     next.style.opacity    = '1';
@@ -282,11 +300,9 @@ lbStage.addEventListener('mouseleave', () => { lbCursor.classList.remove('show')
 
 // ── Global cursor ──
 document.addEventListener('mousemove', e => {
-  cursor.style.left    = e.clientX + 'px';
-  cursor.style.top     = e.clientY + 'px';
-  cursor.style.opacity = '1';
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
 });
-document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
 document.querySelectorAll('a, button, .project-cell').forEach(el => {
   el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
   el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
@@ -295,4 +311,4 @@ document.querySelectorAll('a, button, .project-cell').forEach(el => {
 // ── Protecció imatges ──
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
-document.addEventListener('touchstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); }, { passive: false });
+document.addEventListener('touchstart', e => { if (e.target.tagName === 'IMG' && !isTouchDevice()) e.preventDefault(); }, { passive: false });
