@@ -1,5 +1,57 @@
 const PROJECTS = [
   {
+    slug: '3-xemeneies',
+    title: '3 Xemeneies', studio: 'Bogom',
+    cover: 'projectes/2510_3Xemeneies/3xemeneies00.jpg',
+    photos: [
+      'projectes/2510_3Xemeneies/3xemeneies00.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies01.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies02.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies03.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies04.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies05.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies06.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies07.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies08.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies09.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies10.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies11.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies12.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies13.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies14.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies15.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies16.jpg',
+      'projectes/2510_3Xemeneies/3xemeneies17.jpg',
+    ]
+  },
+  {
+    slug: 'pluja-fiorentina',
+    title: 'Pluja Fiorentina', studio: '',
+    cover: 'projectes/2502_PlujaFlorentina/portada.jpg',
+    photos: [
+      'projectes/2502_PlujaFlorentina/01.jpg',
+      'projectes/2502_PlujaFlorentina/02.jpg',
+      'projectes/2502_PlujaFlorentina/03.jpg',
+      'projectes/2502_PlujaFlorentina/04.jpg',
+      'projectes/2502_PlujaFlorentina/05.jpg',
+      'projectes/2502_PlujaFlorentina/06.jpg',
+    ]
+  },
+  {
+    slug: 'districte-firal-de-bolonia',
+    title: 'Districte Firal de Bolonia', studio: 'Kenzo Tange',
+    cover: 'projectes/2502_SanDonatoBolonia/portada.jpg',
+    photos: [
+      'projectes/2502_SanDonatoBolonia/01.jpg',
+      'projectes/2502_SanDonatoBolonia/02.jpg',
+      'projectes/2502_SanDonatoBolonia/03.jpg',
+      'projectes/2502_SanDonatoBolonia/04.jpg',
+      'projectes/2502_SanDonatoBolonia/05.jpg',
+      'projectes/2502_SanDonatoBolonia/06.jpg',
+      'projectes/2502_SanDonatoBolonia/07.jpg',
+    ]
+  },
+  {
     slug: 'start-up-banc-sabadell',
     title: 'Start-Up Banc Sabadell', studio: 'Bogom',
     cover: 'projectes/2602_Sabadell/Sabadelll-00.jpg',
@@ -35,13 +87,12 @@ const PROJECTS = [
     title: 'Escola Pere Lliscart', studio: 'Bogom',
     cover: 'projectes/2602_PereLliscart/PereLliscart-1.jpg',
     photos: [
-      'projectes/2602_PereLliscart/PereLliscart-1.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-2.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-3.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-4.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-5.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-6.jpg',
-      'projectes/2602_PereLliscart/PereLliscart-7.jpg',
+      'projectes/2602_PereLliscart/PereLliscart-01.jpg',
+      'projectes/2602_PereLliscart/PereLliscart-02.jpg',
+      'projectes/2602_PereLliscart/PereLliscart-03.jpg',
+      'projectes/2602_PereLliscart/PereLliscart-04.jpg',
+      'projectes/2602_PereLliscart/PereLliscart-05.gif',
+      'projectes/2602_PereLliscart/PereLliscart-06.jpg',
     ]
   },
   {
@@ -62,31 +113,6 @@ const PROJECTS = [
     ]
   },
   {
-    slug: '3-xemeneies',
-    title: '3 Xemeneies', studio: 'Bogom',
-    cover: 'projectes/2510_3Xemeneies/3xemeneies00.jpg',
-    photos: [
-      'projectes/2510_3Xemeneies/3xemeneies00.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies01.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies02.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies03.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies04.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies05.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies06.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies07.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies08.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies09.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies10.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies11.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies12.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies13.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies14.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies15.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies16.jpg',
-      'projectes/2510_3Xemeneies/3xemeneies17.jpg',
-    ]
-  },
-  {
     slug: 'cripta-guell',
     title: 'Cripta Güell', studio: 'Antoni Gaudí',
     cover: 'projectes/2505_CriptaGuell/portada.jpg',
@@ -102,33 +128,6 @@ const PROJECTS = [
       'projectes/2505_CriptaGuell/09.jpg',
       'projectes/2505_CriptaGuell/10.jpg',
       'projectes/2505_CriptaGuell/11.jpg',
-    ]
-  },
-  {
-    slug: 'districte-firal-de-bolonia',
-    title: 'Districte Firal de Bolonia', studio: 'Kenzo Tange',
-    cover: 'projectes/2502_SanDonatoBolonia/portada.jpg',
-    photos: [
-      'projectes/2502_SanDonatoBolonia/01.jpg',
-      'projectes/2502_SanDonatoBolonia/02.jpg',
-      'projectes/2502_SanDonatoBolonia/03.jpg',
-      'projectes/2502_SanDonatoBolonia/04.jpg',
-      'projectes/2502_SanDonatoBolonia/05.jpg',
-      'projectes/2502_SanDonatoBolonia/06.jpg',
-      'projectes/2502_SanDonatoBolonia/07.jpg',
-    ]
-  },
-  {
-    slug: 'pluja-fiorentina',
-    title: 'Pluja Fiorentina', studio: '',
-    cover: 'projectes/2502_PlujaFlorentina/portada.jpg',
-    photos: [
-      'projectes/2502_PlujaFlorentina/01.jpg',
-      'projectes/2502_PlujaFlorentina/02.jpg',
-      'projectes/2502_PlujaFlorentina/03.jpg',
-      'projectes/2502_PlujaFlorentina/04.jpg',
-      'projectes/2502_PlujaFlorentina/05.jpg',
-      'projectes/2502_PlujaFlorentina/06.jpg',
     ]
   },
   {
