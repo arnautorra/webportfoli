@@ -81,8 +81,7 @@ function preload(src) {
 function preloadNext(dir) {
   const photos  = PROJECTS[curProj].photos;
   const nextIdx = (curPhoto + dir + photos.length) % photos.length;
-  const img = new Image();
-  img.src = photos[nextIdx];
+  new Image().src = photos[nextIdx];
 }
 
 // ── Lightbox open / close ──
@@ -102,9 +101,13 @@ function openLightbox(pi, ph) {
       stage.appendChild(img);
     });
   } else {
-    imgs.forEach(img => { img.style.transition = 'none'; img.style.transform = 'translateX(0)'; img.style.opacity = '0'; });
+    imgs.forEach(img => {
+      img.style.transition = 'none';
+      img.style.transform  = 'translateX(0)';
+      img.style.opacity    = '0';
+    });
     activeSlot = 0;
-    imgs[0].src = PROJECTS[curProj].photos[curPhoto];
+    imgs[0].src     = PROJECTS[curProj].photos[curPhoto];
     imgs[0].style.opacity = '1';
   }
 
@@ -121,7 +124,9 @@ function closeLightbox() {
   lb.classList.remove('open');
   document.body.style.overflow = '';
   lbCursor.classList.remove('show');
+  overStage = false;
   cursor.classList.remove('hidden');
+  cursor.style.opacity = '1';
   busy = false;
   lb.querySelectorAll('.lb-mobile-img').forEach(el => el.remove());
   if (!isTouchDevice()) history.pushState({}, '', '/');
@@ -176,16 +181,15 @@ function applyTransform(img) {
   img.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
   img.style.transformOrigin = 'center center';
   lbStage.classList.toggle('zoomed', scale > 1);
-  if (scale > 1) cursor.style.opacity = '0';
-  else cursor.style.opacity = '1';
+  cursor.style.opacity = scale > 1 ? '0' : (overStage ? '0' : '1');
 }
 
 function resetZoom() {
   scale = 1; panX = 0; panY = 0;
   const img = getActiveImg();
-  if (img) { img.style.transform = ''; }
+  if (img) img.style.transform = '';
   lbStage.classList.remove('zoomed');
-  cursor.style.opacity = '1';
+  cursor.style.opacity = overStage ? '0' : '1';
 }
 
 function navigateWithZoomReset(dir, targetIdx = null) {
@@ -213,7 +217,6 @@ lbStage.addEventListener('mousedown', e => {
   if (scale <= 1 || isTouchDevice()) return;
   isPanning = true;
   panStart  = { x: e.clientX - panX, y: e.clientY - panY };
-  lbStage.style.cursor = 'grabbing';
 });
 window.addEventListener('mousemove', e => {
   if (!isPanning) return;
@@ -221,11 +224,7 @@ window.addEventListener('mousemove', e => {
   panY = e.clientY - panStart.y;
   applyTransform(getActiveImg());
 });
-window.addEventListener('mouseup', () => {
-  if (!isPanning) return;
-  isPanning = false;
-  lbStage.style.cursor = '';
-});
+window.addEventListener('mouseup', () => { isPanning = false; });
 
 // ── Listeners ──
 lbClose.addEventListener('click', closeLightbox);
@@ -258,7 +257,9 @@ window.addEventListener('popstate', () => {
     lb.classList.remove('open');
     document.body.style.overflow = '';
     lbCursor.classList.remove('show');
+    overStage = false;
     cursor.classList.remove('hidden');
+    cursor.style.opacity = '1';
     busy = false;
   }
 });
@@ -270,6 +271,8 @@ if (initSlug) {
 }
 
 // ── Arrow cursor ──
+let overStage = false;
+
 lbStage.addEventListener('mousemove', e => {
   lbCursor.style.left = e.clientX + 'px';
   lbCursor.style.top  = e.clientY + 'px';
@@ -277,20 +280,27 @@ lbStage.addEventListener('mousemove', e => {
     ? '<polygon points="22,6 6,16 22,26"/>'
     : '<polygon points="10,6 26,16 10,26"/>';
 });
-lbStage.addEventListener('mouseenter', () => { lbCursor.classList.add('show'); cursor.style.opacity = '0'; cursor.classList.add('hidden'); });
-lbStage.addEventListener('mouseleave', () => { lbCursor.classList.remove('show'); cursor.classList.remove('hidden'); });
+lbStage.addEventListener('mouseenter', () => {
+  overStage = true;
+  lbCursor.classList.add('show');
+  cursor.style.opacity = '0';
+  cursor.classList.add('hidden');
+});
+lbStage.addEventListener('mouseleave', () => {
+  overStage = false;
+  lbCursor.classList.remove('show');
+  cursor.classList.remove('hidden');
+  cursor.style.opacity = '1';
+});
 
 // ── Global cursor ──
-let overStage = false;
-lbStage.addEventListener('mouseenter', () => { overStage = true; });
-lbStage.addEventListener('mouseleave', () => { overStage = false; });
-
 document.addEventListener('mousemove', e => {
   cursor.style.left = e.clientX + 'px';
   cursor.style.top  = e.clientY + 'px';
   if (!overStage) cursor.style.opacity = '1';
 });
 document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+
 document.querySelectorAll('a, button, .project-cell').forEach(el => {
   el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
   el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
