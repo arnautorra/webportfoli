@@ -6,8 +6,7 @@
 <title>Contacte — Arnau Torra</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  body, html { height: 100%; overflow: hidden; }
-
+  /* ── Layout contacte ── */
   .contacte-wrap {
     position: fixed;
     top: var(--header-h); left: 0; right: 0; bottom: 0;
@@ -18,7 +17,6 @@
   .contacte-foto {
     flex: 0 0 55%;
     overflow: hidden;
-    padding: 160px 0 160px 160px;
   }
   .contacte-foto img {
     width: 100%; height: 100%;
@@ -55,17 +53,32 @@
   }
   .contacte-correu:hover { border-color: #111; }
 
-  /* Mòbil */
+  /* ── Mòbil ── */
   @media (hover:none) {
-    body, html { overflow: auto; }
+    body, html { overflow: auto; height: auto; }
+
     .contacte-wrap {
       position: static;
       flex-direction: column;
-      padding: 24px 20px 48px;
-      gap: 32px;
+      padding: 0 0 48px;
+      gap: 0;
     }
-    .contacte-foto { flex: none; height: 60vw; }
-    .contacte-text { flex: none; padding: 0; }
+
+    .contacte-foto {
+      flex: none;
+      width: 100%;
+      height: 75vw;
+    }
+    .contacte-foto img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .contacte-text {
+      flex: none;
+      padding: 32px 20px 0;
+    }
   }
 </style>
 </head>
@@ -76,7 +89,7 @@
 <header id="header-grid">
   <a class="h-left" href="/">Projectes</a>
   <a class="h-mid" href="/">Arnau Torra</a>
-  <a class="h-right" href="/contacte">CONTACTE</a>
+  <a class="h-right" href="/contacte.html">CONTACTE</a>
 </header>
 
 <main>

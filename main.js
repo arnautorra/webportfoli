@@ -4,9 +4,12 @@ PROJECTS.forEach((p, i) => {
   const c = document.createElement('div');
   c.className = 'project-cell';
   c.style.animationDelay = `${i * 0.06}s`;
+  // FIX: estructura amb project-cell-img-wrap per evitar que overflow:hidden talli la info
   c.innerHTML = `
-    <img src="${p.cover}" alt="${p.title}" loading="lazy">
-    <div class="project-overlay"></div>
+    <div class="project-cell-img-wrap">
+      <img src="${p.cover}" alt="${p.title}" loading="lazy">
+      <div class="project-overlay"></div>
+    </div>
     <div class="project-info">
       <span class="project-title">${p.title}</span>
       <span class="project-sub">${p.studio}</span>
@@ -40,7 +43,7 @@ const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
 function setMeta() {
   const p = PROJECTS[curProj];
   lbTitle.textContent   = p.title.toUpperCase();
-  lbSub.textContent     = p.studio.toUpperCase();
+  lbSub.textContent     = p.studio ? p.studio.toUpperCase() : '';
   lbCounter.textContent = `${curPhoto + 1} / ${p.photos.length}`;
   updateThumbs();
 }
@@ -89,8 +92,7 @@ function openLightbox(pi, ph) {
   curProj = pi; curPhoto = ph; busy = false;
 
   if (isTouchDevice()) {
-    imgs[0].style.opacity = '0';
-    imgs[1].style.opacity = '0';
+    // Mostra els slots ocults (el CSS els amaga, però cal que existeixin)
     lb.querySelectorAll('.lb-mobile-img').forEach(el => el.remove());
     const stage = document.getElementById('lb-stage');
     PROJECTS[curProj].photos.forEach(src => {
@@ -107,7 +109,7 @@ function openLightbox(pi, ph) {
       img.style.opacity    = '0';
     });
     activeSlot = 0;
-    imgs[0].src     = PROJECTS[curProj].photos[curPhoto];
+    imgs[0].src           = PROJECTS[curProj].photos[curPhoto];
     imgs[0].style.opacity = '1';
   }
 
@@ -115,6 +117,12 @@ function openLightbox(pi, ph) {
   renderThumbs();
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  // FIX mòbil: reset scroll al top
+  if (isTouchDevice()) {
+    lb.scrollTop = 0;
+  }
+
   if (!isTouchDevice()) {
     history.pushState({ slug: PROJECTS[curProj].slug }, '', `/${PROJECTS[curProj].slug}`);
   }
@@ -229,7 +237,11 @@ window.addEventListener('mouseup', () => { isPanning = false; });
 // ── Listeners ──
 lbClose.addEventListener('click', closeLightbox);
 document.getElementById('lb-close-mobile').addEventListener('click', closeLightbox);
-lbHome.addEventListener('click', closeLightbox);
+
+// FIX: lb-home i lb-back tanquen sense navegar
+lbHome.addEventListener('click', e => { e.preventDefault(); closeLightbox(); });
+document.getElementById('lb-back').addEventListener('click', e => { e.preventDefault(); closeLightbox(); });
+
 lbLeft.addEventListener('click',  () => navigateWithZoomReset(-1));
 lbRight.addEventListener('click', () => navigateWithZoomReset(1));
 
@@ -244,11 +256,16 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') navigateWithZoomReset(1);
 });
 
-let tx = 0;
-lb.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
-lb.addEventListener('touchend',   e => {
-  const dx = e.changedTouches[0].clientX - tx;
-  if (Math.abs(dx) > 40) navigate(dx < 0 ? 1 : -1);
+// FIX mòbil: swipe només si el desplaçament horitzontal supera el vertical (no interfereix amb scroll)
+let tx = 0, ty = 0;
+lb.addEventListener('touchstart', e => {
+  tx = e.touches[0].clientX;
+  ty = e.touches[0].clientY;
+}, { passive: true });
+
+lb.addEventListener('touchend', e => {
+  // En mòbil no fem res — l'scroll vertical és el comportament principal
+  // Swipe horitzontal desactivat per no interferir amb el scroll
 });
 
 // ── Routing ──
@@ -264,7 +281,7 @@ window.addEventListener('popstate', () => {
   }
 });
 
-const initSlug = location.pathname.replace('/', '');
+const initSlug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
 if (initSlug) {
   const idx = PROJECTS.findIndex(p => p.slug === initSlug);
   if (idx !== -1) openLightbox(idx, 0);
@@ -277,8 +294,8 @@ lbStage.addEventListener('mousemove', e => {
   lbCursor.style.left = e.clientX + 'px';
   lbCursor.style.top  = e.clientY + 'px';
   lbArrow.innerHTML = e.clientX < window.innerWidth / 2
-    ? '<polygon points="22,6 6,16 22,26"/>'
-    : '<polygon points="10,6 26,16 10,26"/>';
+    ? '<polygon points="24,4 6,18 24,32"/>'
+    : '<polygon points="12,4 30,18 12,32"/>';
 });
 lbStage.addEventListener('mouseenter', () => {
   overStage = true;
