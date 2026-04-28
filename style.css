@@ -203,7 +203,8 @@ main { padding: calc(var(--header-h) + var(--gap)) var(--pad-grid) var(--pad-gri
   }
   #lb-header .h-right { display:none; }
   #lb-header .h-mid { position:static; transform:none; font-size:13px; }
-  #lb-info { min-width:0; flex:1; flex-direction:row; align-items:center; }
+  #lb-info { min-width:0; flex:1; flex-direction:column; align-items:flex-start; gap:1px; }
+  #lb-info-sep { display:none; }
   #lb-back { display:flex; }
 
   /* FIX mòbil: stage és un flux vertical de totes les fotos */
@@ -240,9 +241,12 @@ main { padding: calc(var(--header-h) + var(--gap)) var(--pad-grid) var(--pad-gri
     padding:16px 16px 32px;
     flex-shrink: 0;
   }
-  #lb-footer-mobile a { font-size:11px; color:#888; text-decoration:none; }
+  #lb-footer-mobile a { font-size:11px; color:#888; text-decoration:none; letter-spacing:.05em; }
   #lb-close-mobile { font-size:16px; color:var(--fg); background:none; border:none; line-height:1; padding:4px; }
-  #lb-scroll-top { font-size:18px; color:var(--fg); background:none; border:none; line-height:1; padding:4px; }
+  #lb-scroll-top {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    font-size:18px; color:var(--fg); background:none; border:none; line-height:1; padding:4px;
+  }
 
   /* Protecció imatges mòbil sense bloquejar scroll */
   img {
